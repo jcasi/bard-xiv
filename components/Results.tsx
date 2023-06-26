@@ -1,11 +1,24 @@
 import React from "react";
+import { useState } from "react";
 
 type Props = {};
 
 export default function Results({}: Props) {
-  var searchParam = "rainbow";
+  var searchParam = "elm lumber";
   var count = 0;
   var parsed;
+  // var iconList: string[];
+  // iconList = [];
+  // const [iconList, setIconList] = useState({ key: "", value: "" });
+
+  // const addIconPath = () => {
+  //   setIconList({ ...iconList });
+  // };
+
+  const [iconList, setIconList] = useState({});
+  const addIconPath = (key: string, value: string) => {
+    setIconList({ ...iconList, [key]: value });
+  };
 
   const appendCall = "https://xivapi.com/search?string=" + searchParam;
 
@@ -18,6 +31,7 @@ export default function Results({}: Props) {
         if (result.UrlType === "Item") {
           console.log(result);
           count++;
+          //addIconPath(result.ID.toString(), result.Icon);
         }
       }
       //console.log(count); //for debugging
@@ -35,6 +49,9 @@ export default function Results({}: Props) {
           Searchbar to go here
         </h1>
       </div>
+      {Object.keys(iconList).map((key) => (
+        <img className="lg:w-10 md:w-8 sm:w-8" />
+      ))}
     </div>
   );
 }
