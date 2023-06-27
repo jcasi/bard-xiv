@@ -9,16 +9,27 @@ export default function Results({}: Props) {
   var parsed;
   // var iconList: string[];
   // iconList = [];
-  // const [iconList, setIconList] = useState({ key: "", value: "" });
+  var fetchedIcons: string[];
+  fetchedIcons = [];
+  var fetchedIDs: number[];
+  fetchedIDs = [];
+  const [iconList, setIconList] = useState([
+    {
+      id: 0,
+      path: "",
+    },
+  ]);
 
-  // const addIconPath = () => {
-  //   setIconList({ ...iconList });
-  // };
-
-  const [iconList, setIconList] = useState({});
-  const addIconPath = (key: string, value: string) => {
-    setIconList({ ...iconList, [key]: value });
-  };
+  function handleAddIcon(iconID: number, iconPath: string) {
+    const updateIcons = [
+      ...iconList,
+      {
+        id: iconID,
+        path: iconPath,
+      },
+    ];
+    setIconList(updateIcons);
+  }
 
   const appendCall = "https://xivapi.com/search?string=" + searchParam;
 
@@ -31,10 +42,19 @@ export default function Results({}: Props) {
         if (result.UrlType === "Item") {
           console.log(result);
           count++;
-          //addIconPath(result.ID.toString(), result.Icon);
+          fetchedIcons.push(result.path);
+          fetchedIDs.push(result.ID);
+          // if (!iconList.includes(result.ID)) {
+          //   //handleAddIcon(result.ID, result.Icon);
+          // }
         }
       }
       //console.log(count); //for debugging
+      console.log(fetchedIcons.length);
+      console.log(fetchedIDs.length);
+      for (var i = 0; i < fetchedIcons.length; i++) {
+        //handleAddIcon(fetchedIDs[i], fetchedIcons[i]);
+      }
     });
 
   return (
@@ -49,8 +69,10 @@ export default function Results({}: Props) {
           Searchbar to go here
         </h1>
       </div>
-      {Object.keys(iconList).map((key) => (
-        <img className="lg:w-10 md:w-8 sm:w-8" />
+      {iconList.map((icons) => (
+        <div key={icons.id}>
+          <img className="lg:w-10 md:w-8 sm:w-8" src={icons.path} />
+        </div>
       ))}
     </div>
   );
