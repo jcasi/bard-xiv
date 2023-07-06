@@ -1,61 +1,30 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type Props = {};
 
 export default function Results({}: Props) {
-  var searchParam = "elm lumber";
-  var count = 0;
-  var parsed;
-  // var iconList: string[];
-  // iconList = [];
-  var fetchedIcons: string[];
-  fetchedIcons = [];
-  var fetchedIDs: number[];
-  fetchedIDs = [];
-  const [iconList, setIconList] = useState([
-    {
-      id: 0,
-      path: "",
-    },
-  ]);
-
-  function handleAddIcon(iconID: number, iconPath: string) {
-    const updateIcons = [
-      ...iconList,
-      {
-        id: iconID,
-        path: iconPath,
-      },
-    ];
-    setIconList(updateIcons);
-  }
-
-  const appendCall = "https://xivapi.com/search?string=" + searchParam;
-
-  fetch(appendCall)
-    .then((response) => response.json())
-    .then((response) => {
-      parsed = response.Results;
-      for (var i = 0; i < parsed.length; i++) {
-        var result = parsed[i];
-        if (result.UrlType === "Item") {
-          console.log(result);
-          count++;
-          fetchedIcons.push(result.path);
-          fetchedIDs.push(result.ID);
-          // if (!iconList.includes(result.ID)) {
-          //   //handleAddIcon(result.ID, result.Icon);
-          // }
+  const [results, setResults] = useState<any[]>([]);
+  var searchParam = "approved grade 4 skybuilder";
+  let parsed = [];
+  const itemList = new Array<any>();
+  const appendLink = "https://xivapi.com/search?string=" + searchParam;
+  const searchResults = () => {
+    fetch(appendLink)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        parsed = data.Results;
+        for (var i = 0; i < parsed.length; i++) {
+          if (parsed[i].UrlType === "Item") {
+            //console.log(parsed[i]);
+            itemList.push(parsed[i]);
+          }
         }
-      }
-      //console.log(count); //for debugging
-      console.log(fetchedIcons.length);
-      console.log(fetchedIDs.length);
-      for (var i = 0; i < fetchedIcons.length; i++) {
-        //handleAddIcon(fetchedIDs[i], fetchedIcons[i]);
-      }
-    });
+        setResults(itemList);
+      });
+  };
+  useEffect(() => searchResults(), []);
 
   return (
     <div className="absolute left-[14%] w-[40%] bg-gunmetal h-full">
@@ -69,11 +38,16 @@ export default function Results({}: Props) {
           Searchbar to go here
         </h1>
       </div>
-      {iconList.map((icons) => (
-        <div key={icons.id}>
-          <img className="lg:w-10 md:w-8 sm:w-8" src={icons.path} />
-        </div>
-      ))}
+      <div>
+        {results.map((result) => {
+          return (
+            <div>
+              <img className="lg:w-10 md:w-8 sm:w-8" src={result.Icon} />
+              <h1>{result.Name}</h1>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
